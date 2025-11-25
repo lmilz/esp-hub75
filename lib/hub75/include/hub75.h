@@ -33,6 +33,12 @@
  * This driver supports displaying static and moving pixels on HUB75 panels.
  */
 
+struct hub75_color {
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+};
+
 // GPIO pins
 #define R1_PIN  25 // Red channel for the upper panel row
 #define G1_PIN  26 // Green channel for the upper panel row
