@@ -22,3 +22,12 @@
 // SOFTWARE.
 
 #include "hub75.h"
+
+void hub75_init() {
+	// clear framebuffer
+	for (uint16_t i = 0; i < PANEL_WIDTH * PANEL_HEIGHT; ++i){
+		framebuffer[i] = 0;
+	}
+
+	//set gpio
+}
