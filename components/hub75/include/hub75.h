@@ -44,8 +44,8 @@ struct hub75_color {
 #define G1_PIN  26 // Green channel for the upper panel row
 #define B1_PIN  27 // Blue channel for the upper panel row
 #define R2_PIN  14 // Red channel for the lower panel
-#define G1_PIN  12 // Green channel for the lower panel
-#define B1_PIN  13 // Blue channel for the lower panel
+#define G2_PIN  12 // Green channel for the lower panel
+#define B2_PIN  13 // Blue channel for the lower panel
 #define LA_PIN  17 // Address line A (bit 0)
 #define LB_PIN  16 // Address line B (bit 1)
 #define LC_PIN  4  // Address line C (bit 2)
@@ -60,7 +60,7 @@ struct hub75_color {
 #define PANEL_HEIGHT 64
 
 // Framebuffer
-uint16_t hub75_framebuffer[PANEL_WIDTH * PANEL_HEIHT];
+uint16_t hub75_framebuffer[PANEL_WIDTH * PANEL_HEIGHT];
 
 void hub75_init();
 void hub75_set_pixel(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);

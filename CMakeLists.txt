@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-include($ENV{IDF_PATH}/tools/cmake/project.cmake))
+include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
 set(COMPONENTS main hub75)
 project(esp-hub75)
