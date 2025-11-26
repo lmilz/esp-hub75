@@ -1,8 +1,16 @@
+# build folders
+/bin/
+/build/
+
+# Espress-IDF
+sdkconfig
+sdkconfig.old
+warnings.txt
+
 # Prerequisites
 *.d
 
 # Object files
-/build
 *.o
 *.ko
 *.obj
