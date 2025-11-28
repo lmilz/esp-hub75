@@ -1,7 +1,6 @@
-
 // MIT License
 //
-// Copyright (c) 2024 Lars Milz
+// Copyright (c) 2025 Lars Milz
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <stdio.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include "hub75.h"
 
-void hub75_init() {
-	// clear framebuffer
-	for (uint16_t i = 0; i < PANEL_WIDTH * PANEL_HEIGHT; ++i){
-		hub75_framebuffer[i] = 0;
-	}
-
-	//set gpio
+void app_main() {
 }
