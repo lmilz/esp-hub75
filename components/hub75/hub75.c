@@ -21,6 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <driver/gpio.h>
 #include "hub75.h"
 
 void hub75_init() {
@@ -30,4 +31,17 @@ void hub75_init() {
 	}
 
 	//set gpio
+	gpio_config_t io_config = {
+		.pin_bit_mask = (1ULL << R1_PIN) | (1ULL << G1_PIN) | (1ULL << B1_PIN) |
+			        (1ULL << R2_PIN) | (1ULL << G2_PIN) | (1ULL << B2_PIN) |
+				(1ULL << LA_PIN) | (1ULL << LB_PIN) | (1ULL << LC_PIN) |
+				(1ULL << LD_PIN) | (1ULL << LE_PIN) | (1ULL << CLK_PIN) |
+				(1ULL << LAT_PIN) | (OE_PIN << LE_PIN),
+		.mode = GPIO_MODE_OUTPUT,
+		.pull_up_en = GPIO_PULLUP_DISABLE,
+		.pull_down_en = GPIO_PULLDOWN_DISABLE,
+		.intr_type = GPIO_INTR_DISABLE
+		
+	};
+	gpio_config(&io_config);
 }
