@@ -1,7 +1,7 @@
 
 // MIT License
 //
-// Copyright (c) 2024 Lars Milz
+// Copyright (c) 2025 Lars Milz
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@
 
 void hub75_init() {
 	// clear framebuffer
-	for (uint16_t i = 0; i < PANEL_WIDTH * PANEL_HEIGHT; ++i){
+	for (uint16_t i = 0; i < PANEL_WIDTH * PANEL_HEIGHT; ++i) {
 		hub75_framebuffer[i] = 0;
 	}
 
@@ -44,4 +44,16 @@ void hub75_init() {
 		
 	};
 	gpio_config(&io_config);
+}
+
+void hub75_set_pixel(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+	// Check bounds
+	if (x >= PANEL_WIDTH || y >= PANEL_HEIGHT)
+		return;
+}
+
+void hub75_clear_framebuffer() {
+	for (uint16_t i = 0; i < PANEL_WIDTH * PANEL_HEIGHT; ++i) {
+		hub75_framebuffer = 0;
+	}
 }
