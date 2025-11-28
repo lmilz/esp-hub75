@@ -54,6 +54,6 @@ void hub75_set_pixel(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
 
 void hub75_clear_framebuffer() {
 	for (uint16_t i = 0; i < PANEL_WIDTH * PANEL_HEIGHT; ++i) {
-		hub75_framebuffer = 0;
+		hub75_framebuffer[i] = 0;
 	}
 }
