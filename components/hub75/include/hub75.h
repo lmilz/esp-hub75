@@ -20,18 +20,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+/**
+ * @file: hub75.h
+ * @brief HUB75 LED Matrix Panel Driver API
+ *
+ * Low-Level driver for HUB75 RGB LED matrix panels.
+ * Supports panels multiple scan rates.
+ *
+ */
+
 #ifndef HUB75_H
 #define HUB75_H
 
 // Includes
 #include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
+
+/* ===================================================
+ * Scan Rate Definitions
+ * ===================================================
+ */
 
 /**
- * @hub75.h
- * @brief Driver to control HUB75 RGB LED panels.
+ * @brief Panel scan rate
  *
- * This driver supports displaying static and moving pixels on HUB75 panels.
+ * The scan rate determines how the panel multiplexes rows.
+ * Lower scan rates = more rows driven simultaneously (brighter but more pins).
+ *
+ * | Scan Rate | Address Bits  | Rows per Scan | Typical panels |
+ * |-----------|---------------|---------------|----------------|
+ * | 1/4       | 2 (A,B)       | height/4      | 16x16          |
+ * | 1/8       | 3 (A,B,C)     | height/8      | 32x16          |
+ * | 1/16      | 4 (A,B,C,D)   | height/16     | 32x32, 64x32   |
+ * | 1/32      | 5 (A,B,C,D,E) | height/32     | 64y64          |
  */
+
+typedef enum {
+    HUB75_SCAN_1_4 = 4,   ///< 1/4 scan  - 2 address bits (A,B)
+    HUB75_SCAN_1_8 = 8,   ///< 1/8 scan  - 3 address bits (A,B,C)
+    HUB75_SCAN_1_16 = 16, ///< 1/16 scan - 4 address bits (A,B,C,D)
+    HUB75_SCAN_1_32 = 32  ///< 1/32 scan - 5 address bits (A,B,C,D,E)
+} hub75_scan_rate_t;
 
 struct hub75_color {
 	uint8_t r;
