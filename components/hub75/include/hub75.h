@@ -63,37 +63,82 @@ typedef enum {
     HUB75_SCAN_1_32 = 32  ///< 1/32 scan - 5 address bits (A,B,C,D,E)
 } hub75_scan_rate_t;
 
-struct hub75_color {
-	uint8_t r;
-	uint8_t g;
-	uint8_t b;
-};
+/* ===================================================
+ * Type Definitions
+ * ===================================================
+ */
 
-// GPIO pins
-#define R1_PIN  25 // Red channel for the upper panel row
-#define G1_PIN  26 // Green channel for the upper panel row
-#define B1_PIN  27 // Blue channel for the upper panel row
-#define R2_PIN  14 // Red channel for the lower panel
-#define G2_PIN  12 // Green channel for the lower panel
-#define B2_PIN  13 // Blue channel for the lower panel
-#define LA_PIN  17 // Address line A (bit 0)
-#define LB_PIN  16 // Address line B (bit 1)
-#define LC_PIN  4  // Address line C (bit 2)
-#define LD_PIN  2  // Address line D (bit 3)
-#define LE_PIN  15 // Address line E (bit 4, for extended adrdressing)
-#define CLK_PIN 18 // Clock signal
-#define LAT_PIN 19 // Latch signal
-#define OE_PIN  21 // Output Enable signal
-		   
-// Panel dimensions (e.g. 64x64)
-#define PANEL_WIDTH  64
-#define PANEL_HEIGHT 64
+/**
+ * @brief Driver handle
+ */
+typedef struct hub75_driver* hub75_handle_t;
 
-// Framebuffer
-uint16_t hub75_framebuffer[PANEL_WIDTH * PANEL_HEIGHT];
+/**
+ * @brief GPIO pin configuration
+ *
+ * Set unused address pins to HUB75_PIN_UNUSED.
+ */
+typedef struct {
+    uint8_t r1, g1, b1; ///< RGB data - upper half
+    uint8_t r2, g2, b2; ///< RGB data - lower half
+    uint8_t addr_a;     ///< Row address bit 0 (all scan rates)
+    uint8_t addr_b;     ///< Row address bit 1 (all scan rates)
+    uint8_t addr_c;     ///< Row address bit 2 (1/8, 1/17, 1/32)
+    uint8_t addr_d;     ///< Row address bit 3 (1/16, 1/32)
+    uint8_t addr_e;     ///< Row address bit 4 (1/16, 1/32)
+    uint8_t clk;        ///< Pixel clock
+    uint8_t lat;        ///< Latch
+    uint8_t oe;         ///< Output Enable
+} hub75_pins_t;
 
-void hub75_init();
-void hub75_set_pixel(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
-void hub75_clear_framebuffer();
+/**
+ * @brief Panel configuration
+ */
+typedef struct {
+    hub75_pins_t      pins;      ///< GPIO pin mapping
+    uint8_t           width;     ///< Panel width
+    uint8_t           height;    ///< Panel height
+    hub75_scan_rate_t scan_rate; ///< Panel scan rate
+} hub75_config_t;
 
-#endif // HUB75_H
+/* ===================================================
+ * HUB75 and Framebuffer API
+ * ===================================================
+ */
+
+/**
+ * @brief Initialize the HUB75 driver
+ *
+ * Configures GPIO pins based on scan rate and allocates the framebuffer.
+ * Validates that panel dimensions match the scan rate.
+ *
+ * @param config panel configuration
+ * @return Handle on success, NULL on failure (invalid config or allocation error)
+ */
+hub75_handle_t hub75_init(const hub75_config_t* config);
+
+/**
+ * @brief Release the driver and free resources
+ * @param handle Driver handle
+ */
+void hub75_release(hub75_handle_t handle);
+
+/**
+ * @brief Get direct pointer to the framebuffer
+ *
+ * The framebuffer uses RGB565 format (16 bits per pixel).
+ * Layout: pixel[y*width+x]
+ *
+ * @param handle driver handle
+ * @return Pointer to framebuffer, NULL if handle invalid
+ */
+uint16_t* hub75_get_framebuffer(hub75_handle_t handle);
+
+/**
+ * @brief Get framebuffer size in bytes
+ * @param handle Driver handle
+ * @return Size in bytes
+ */
+size_t hub75_get_framebuffer_size/hub75_handle_t handle);
+
+#endif /* HUB75_H */
