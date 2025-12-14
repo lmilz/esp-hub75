@@ -139,6 +139,24 @@ uint16_t* hub75_get_framebuffer(hub75_handle_t handle);
  * @param handle Driver handle
  * @return Size in bytes
  */
-size_t hub75_get_framebuffer_size/hub75_handle_t handle);
+size_t hub75_get_framebuffer_size(hub75_handle_t handle);
 
+/**
+ * @brief Refresh the display
+ *
+ * Scans through all rows once according to the configuration scan rate.
+ * Must be called repeatedly in a loop for a stable image.
+ *
+ * @param handle Driver handle
+ */
+void hub75_refresh(hub75_handle_t handle);
+
+
+/**
+ * @brief Enable or disable display output
+ * @param handle Driver handle
+ * @param enabled true = display on, false = display blanked
+ */
+void hub75_set_enabled(hub75_handle_t handle, bool enabled);
+ 
 #endif /* HUB75_H */
