@@ -21,39 +21,112 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+/**
+ * @file hub75.c
+ * @brief HUB75 LED matrix panel driver implementation
+ */
+
 #include <driver/gpio.h>
+#include <esp_rom_sys.h>
+#include <esp_log.h>
+#include <stdlib.h>
 #include "hub75.h"
 
-void hub75_init() {
-	// clear framebuffer
-	for (uint16_t i = 0; i < PANEL_WIDTH * PANEL_HEIGHT; ++i) {
-		hub75_framebuffer[i] = 0;
-	}
+/* ====================================================
+ * Private Types and Functions
+ * ====================================================
+ */
 
-	//set gpio
-	gpio_config_t io_config = {
-		.pin_bit_mask = (1ULL << R1_PIN) | (1ULL << G1_PIN) | (1ULL << B1_PIN) |
-			        (1ULL << R2_PIN) | (1ULL << G2_PIN) | (1ULL << B2_PIN) |
-				(1ULL << LA_PIN) | (1ULL << LB_PIN) | (1ULL << LC_PIN) |
-				(1ULL << LD_PIN) | (1ULL << LE_PIN) | (1ULL << CLK_PIN) |
-				(1ULL << LAT_PIN) | (OE_PIN << LE_PIN),
-		.mode = GPIO_MODE_OUTPUT,
-		.pull_up_en = GPIO_PULLUP_DISABLE,
-		.pull_down_en = GPIO_PULLDOWN_DISABLE,
-		.intr_type = GPIO_INTR_DISABLE
-		
-	};
-	gpio_config(&io_config);
+static const char* TAG = "HUB75";
+
+struct hub75_driver {
+    hub75_pins_t      pins;
+    uint8_t           width;
+    uint8_t           height;
+    hub75_scan_rate_t scan_rate;
+    uint16_t*         framebuffer;
+    bool              enabled;
+};
+
+static void init_gpio(const struct hub75_driver* drv) {
+    const hub75_pins_t* pins = &drv->pins;
+
+    uint64_t pin_mask = 
+      (1ULL << pins->r1)  | (1ULL << pins->g1)  | (1ULL << pins->b1) |
+      (1ULL << pins->r2)  | (1ULL << pins->g2)  | (1ULL << pins->b2) |
+      (1ULL << pins->clk) | (1ULL << pins->lat) | (1ULL << pins->oe);
+
+    // Add address pins based on scan rate
+    pin_mask |= (1ULL << pins->addr_a);
+    pin_mask |= (1ULL << pins->addr_b);
+
+    // TODO: Check scan rates
+    if (pins->addr_c != HUB75_PIN_UNUSED)
+        pin_mask |= (1ULL << pins->addr_c);
+    if (pins->addr_d != HUB75_PIN_UNUSED)
+        pin_mask |= (1ULL << pins->addr_d);
+    if (pins->addr_e != HUB75_PIN_UNUSED)
+        pin_mask |= (1ULL << pins->addr_e);
+
+    gpio_config_t config = {
+        .pin_bit_mask = pin_mask,
+        .mode         = GPIO_MODE_OUTPUT,
+        .pull_up_en   = GPIO_PULLUP_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type    = GPIO_INTR_DISABLE
+    };
+    gpio_config(&config);
+
+    // Initial states
+    gpio_set_level(pins->oe, 1); // Display off
+    gpio_set_level(pins->lat, 0); // Latch inactive
+    gpio_set_level(pins->clk, 0); // Clock low
+                                  
+    // Clear data lines
+    gpio_set_level(pins->r1, 0);
+    gpio_set_level(pins->g1, 0);
+    gpio_set_level(pins->b1, 0);
+    gpio_set_level(pins->r2, 0);
+    gpio_set_level(pins->g2, 0);
+    gpio_set_level(pins->b2, 0);
+
+    // TODO: Clear address lines
 }
 
-void hub75_set_pixel(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
-	// Check bounds
-	if (x >= PANEL_WIDTH || y >= PANEL_HEIGHT)
-		return;
-}
+/* ====================================================
+ * Public API - HUB75 Driver
+ * ====================================================
+ */
 
-void hub75_clear_framebuffer() {
-	for (uint16_t i = 0; i < PANEL_WIDTH * PANEL_HEIGHT; ++i) {
-		hub75_framebuffer[i] = 0;
-	}
+hub75_handle_t hub75_init(const hub75_config_t* config) {
+    // TODO: valid config
+    
+    // Init driver
+    struct hub75_driver* drv = malloc(sizeof(struct hub75_driver));
+    if (drv == NULL) {
+        ESP_LOGE(TAG, "Failed to allocate driver structure");
+        return NULL;
+    }
+
+    // Init framebuffer
+    size_t fb_size = config->width*config->height*sizeof(uint16_t);
+    drv->framebuffer = malloc(fb_size);
+    if (drv->framebuffer == NULL) {
+        ESP_LOGE(TAG, "Failed to allocate framebuffer (%d bytes)", fb_size);
+        free(drv);
+        return NULL;
+    }
+
+    memcpy(&drv->pins, &config->pins, sizeof(hub75_pins_t));
+    drv->width     = config->width;
+    drv->height    = config->height;
+    drv->scan_rate = config->scan_rate;
+    drv->enabled   = true;
+
+    memset(drv->framebuffer, 0, fb_size);
+    init_gpio(drv);
+
+    ESP_LOGI(TAG, "Initialized %d%x%d panel, 1/%d scan", config->width, config->height, config->scan_rate);
+
+    return drv;
 }

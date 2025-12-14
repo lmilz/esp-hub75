@@ -101,6 +101,11 @@ typedef struct {
     hub75_scan_rate_t scan_rate; ///< Panel scan rate
 } hub75_config_t;
 
+/**
+ * @brief Marker for unused GPIO pins
+ */
+#define HUB75_PIN_UNUSED 0xFF
+
 /* ===================================================
  * HUB75 and Framebuffer API
  * ===================================================
