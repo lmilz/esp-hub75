@@ -129,24 +129,6 @@ hub75_handle_t hub75_init(const hub75_config_t* config);
 void hub75_release(hub75_handle_t handle);
 
 /**
- * @brief Get direct pointer to the framebuffer
- *
- * The framebuffer uses RGB565 format (16 bits per pixel).
- * Layout: pixel[y*width+x]
- *
- * @param handle driver handle
- * @return Pointer to framebuffer, NULL if handle invalid
- */
-uint16_t* hub75_get_framebuffer(hub75_handle_t handle);
-
-/**
- * @brief Get framebuffer size in bytes
- * @param handle Driver handle
- * @return Size in bytes
- */
-size_t hub75_get_framebuffer_size(hub75_handle_t handle);
-
-/**
  * @brief Refresh the display
  *
  * Scans through all rows once according to the configuration scan rate.

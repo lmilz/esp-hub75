@@ -44,9 +44,44 @@ struct hub75_driver {
     uint8_t           width;
     uint8_t           height;
     hub75_scan_rate_t scan_rate;
+    uint8_t           addr_bits;
+    uint8_t           scan_rows;
     uint16_t*         framebuffer;
     bool              enabled;
 };
+
+static inline uint8_t hub75_get_address_bits(hub75_scan_rate_t scan_rate) {
+    switch (scan_rate) {
+        case HUB75_SCAN_1_4:  return 2;
+        case HUB75_SCAN_1_8:  return 3;
+        case HUB75_SCAN_1_16: return 4;
+        case HUB75_SCAN_1_32: return 5;
+        default:              return 0;
+    }
+}
+
+/**
+ * @brief Set row address with variable number of bits
+ */
+static inline void set_row_address(const struct hub75_driver* drv, uint8_t row) {
+    const hub75_pins_t* pins = &drv->pins;
+
+    // Always set A and B
+    gpio_set_level(pins->addr_a,  row       & 0x01);
+    gpio_set_level(pins->addr_b, (row >> 1) & 0x01);
+
+    // C for scan rates 1/8, 1/16 and 1/32
+    if (drv->addr_bits >= 3 && pins->addr_c != HUB75_PIN_UNUSED)
+        gpio_set_level(pins->addr_c, (row >> 2) & 0x01);
+
+    // D for scan rates 1/16 and 1/32
+    if (drv->addr_bits >= 4 && pins->addr_d != HUB75_PIN_UNUSED)
+        gpio_set_level(pins->addr_d, (row >> 3) & 0x01);
+
+    // E for scan rate 1/32 only
+    if (drv->addr_bits >= 5 && pins->addr_e != HUB75_PIN_UNUSED)
+        gpio_set_level(pins->addr_e, (row >> 4) & 0x01);
+}
 
 static void init_gpio(const struct hub75_driver* drv) {
     const hub75_pins_t* pins = &drv->pins;
@@ -60,12 +95,11 @@ static void init_gpio(const struct hub75_driver* drv) {
     pin_mask |= (1ULL << pins->addr_a);
     pin_mask |= (1ULL << pins->addr_b);
 
-    // TODO: Check scan rates
-    if (pins->addr_c != HUB75_PIN_UNUSED)
+    if (drv->addr_bits >= 3 && pins->addr_c != HUB75_PIN_UNUSED)
         pin_mask |= (1ULL << pins->addr_c);
-    if (pins->addr_d != HUB75_PIN_UNUSED)
+    if (drv->addr_bits >= 4 && pins->addr_d != HUB75_PIN_UNUSED)
         pin_mask |= (1ULL << pins->addr_d);
-    if (pins->addr_e != HUB75_PIN_UNUSED)
+    if (drv->addr_bits >= 5 && pins->addr_e != HUB75_PIN_UNUSED)
         pin_mask |= (1ULL << pins->addr_e);
 
     gpio_config_t config = {
@@ -90,7 +124,7 @@ static void init_gpio(const struct hub75_driver* drv) {
     gpio_set_level(pins->g2, 0);
     gpio_set_level(pins->b2, 0);
 
-    // TODO: Clear address lines
+    set_row_address(drv, 0);
 }
 
 /* ====================================================
@@ -121,6 +155,8 @@ hub75_handle_t hub75_init(const hub75_config_t* config) {
     drv->width     = config->width;
     drv->height    = config->height;
     drv->scan_rate = config->scan_rate;
+    drv->addr_bits = hub75_get_address_bits(config->scan_rate);
+    drv->scan_rows = 0.5*config->height;
     drv->enabled   = true;
 
     memset(drv->framebuffer, 0, fb_size);
@@ -129,4 +165,28 @@ hub75_handle_t hub75_init(const hub75_config_t* config) {
     ESP_LOGI(TAG, "Initialized %d%x%d panel, 1/%d scan", config->width, config->height, config->scan_rate);
 
     return drv;
+}
+
+void hub75_release(hub75_handle_t handle) {
+    if (handle == NULL)
+        return;
+
+    gpio_set_level(handle->pins.oe, 1); // Disable display
+    free(handle->framebuffer);
+    free(handle);
+}
+
+void hub75_refresh(hub75_handle_t handle) {
+    if (handle == NULL)
+        return;
+ 
+    const hub75_pins_t* pins = &drv->pins;
+
+    for (uint8_t row = 0; row < handle->scan_rows; row++) {
+        gpio_set_level(pins->oe, 1);
+        set_row_address(handle, row);
+
+        const uint16_t* row_upper = &handle->framebuffer[row * handle->width];
+        const uint16_t* row_lower = &handle->framebuffer[(row + handle->scan_rows) * handle->width];
+    }
 }
