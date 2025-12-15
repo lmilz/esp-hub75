@@ -221,3 +221,12 @@ void hub75_refresh(hub75_handle_t handle) {
         }
     }
 }
+
+void hub75_set_enabled(hub75_handle_t handle, bool enabled) {
+    if (handle == NULL)
+        return;
+  
+    handle->enabled = enabled;
+    if (!enabled)
+        gpio_set_level(handle->pins.oe, 1);
+}

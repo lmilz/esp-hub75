@@ -1,3 +1,11 @@
-idf_component_register(SRCS "main.c"
+# Main component - links the selected application
+
+if(APP STREQUAL "matrix")
+  set(APP_SRC "../apps/matrix/main.c")
+elseif(APP STREQUAL "gol")
+  set(APP_SRC "../aps/game_of_life/main.c")
+endif()
+
+idf_component_register(SRCS ${APP_SRC}
 	INCLUDE_DIRS "."
-        PRIV_REQUIRES hub75)
+  REQUIRES hub75)
