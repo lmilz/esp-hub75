@@ -95,10 +95,11 @@ typedef struct {
  * @brief Panel configuration
  */
 typedef struct {
-    hub75_pins_t      pins;      ///< GPIO pin mapping
-    uint8_t           width;     ///< Panel width
-    uint8_t           height;    ///< Panel height
-    hub75_scan_rate_t scan_rate; ///< Panel scan rate
+    hub75_pins_t      pins;        ///< GPIO pin mapping
+    uint8_t           width;       ///< Panel width
+    uint8_t           height;      ///< Panel height
+    hub75_scan_rate_t scan_rate;   ///< Panel scan rate
+    uint8_t           row_time_us; ///< Row display duration in us
 } hub75_config_t;
 
 /**

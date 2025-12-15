@@ -46,6 +46,7 @@ struct hub75_driver {
     hub75_scan_rate_t scan_rate;
     uint8_t           addr_bits;
     uint8_t           scan_rows;
+    uint8_t           row_time_us;
     uint16_t*         framebuffer;
     bool              enabled;
 };
@@ -152,12 +153,13 @@ hub75_handle_t hub75_init(const hub75_config_t* config) {
     }
 
     memcpy(&drv->pins, &config->pins, sizeof(hub75_pins_t));
-    drv->width     = config->width;
-    drv->height    = config->height;
-    drv->scan_rate = config->scan_rate;
-    drv->addr_bits = hub75_get_address_bits(config->scan_rate);
-    drv->scan_rows = 0.5*config->height;
-    drv->enabled   = true;
+    drv->width       = config->width;
+    drv->height      = config->height;
+    drv->scan_rate   = config->scan_rate;
+    drv->addr_bits   = hub75_get_address_bits(config->scan_rate);
+    drv->scan_rows   = 0.5*config->height;
+    drv->row_time_us = config->row_time_us;
+    drv->enabled     = true;
 
     memset(drv->framebuffer, 0, fb_size);
     init_gpio(drv);
@@ -180,13 +182,42 @@ void hub75_refresh(hub75_handle_t handle) {
     if (handle == NULL)
         return;
  
-    const hub75_pins_t* pins = &drv->pins;
+    const hub75_pins_t* pins = &handle->pins;
 
     for (uint8_t row = 0; row < handle->scan_rows; row++) {
         gpio_set_level(pins->oe, 1);
         set_row_address(handle, row);
 
+        // Determine framebuffer row indices
+        // Upper half: rows 0 to (height/2 - 1)
+        // Lower half: row (height/2) to (height - 1)
         const uint16_t* row_upper = &handle->framebuffer[row * handle->width];
         const uint16_t* row_lower = &handle->framebuffer[(row + handle->scan_rows) * handle->width];
+
+        // Shift out all columns
+        for (uint8_t col = 0; col < handle->width; col++) {
+
+            // Color mode
+            gpio_set_level(pins->r1, ((row_upper[col] >> 11) & 0x1F) != 0);
+            gpio_set_level(pins->g1, ((row_upper[col] >> 5)  & 0x3F) != 0);
+            gpio_set_level(pins->b1,  (row_upper[col]        & 0x1F) != 0);
+            
+            gpio_set_level(pins->r2, ((row_lower[col] >> 11) & 0x1F) != 0);
+            gpio_set_level(pins->g2, ((row_lower[col] >> 5)  & 0x3F) != 0);
+            gpio_set_level(pins->b2,  (row_lower[col]        & 0x1F) != 0);
+
+            // Clock pulse
+            gpio_set_level(pins->clk, 1);
+            gpio_set_level(pins->clk, 0);
+        }
+
+        // Latch and enable
+        gpio_set_level(pins->lat, 1);
+        gpio_set_level(pins->lat, 0);
+
+        if (handle->enabled) {
+          gpio_set_level(pins->oe, 0);
+          esp_rom_delay_us(handle->row_time_us);
+        }
     }
 }
