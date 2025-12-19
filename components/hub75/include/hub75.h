@@ -38,6 +38,18 @@
 #include <stddef.h>
 
 /* ===================================================
+ * Predefined Colors (RGB565)
+ * ===================================================
+ */
+
+#define HUB75_GFX_BLACK    0x0000
+#define HUB75_GFX_WHITE    0xFFFF
+#define HUB75_GFX_RED      0xF800
+#define HUB75_GFX_GREEN    0x07E0
+#define HUB75_GFX_BLUE     0x001F
+
+
+/* ===================================================
  * Scan Rate Definitions
  * ===================================================
  */
@@ -67,6 +79,28 @@ typedef enum {
  * Type Definitions
  * ===================================================
  */
+
+/**
+ * @brief Default pin configuration for common ESP32 wiring
+ */
+#define HUB75_PINS_DEFAULT() { \
+    .r1 = 25, .g1 = 26, .b1 = 27, \
+    .r2 = 14, .g2 = 12, .b2 = 13, \
+    .addr_a = 22, .addr_b = 23, .addr_c = 5, \
+    .addr_d = 33, .addr_e = 32, \
+    .clk = 18, .lat = 19, .oe = 21 \
+}
+
+/**
+ * @brief Default configuration for 64x64 panel
+ */
+#define HUB75_CONFIG_DEFAULT() { \
+    .pins = HUB75_PINS_DEFAULT(), \
+    .width = 64, \
+    .height = 64, \
+    .scan_rate = HUB75_SCAN_1_32, \
+    .row_time_us = 120 \
+}
 
 /**
  * @brief Driver handle
@@ -139,12 +173,32 @@ void hub75_release(hub75_handle_t handle);
  */
 void hub75_refresh(hub75_handle_t handle);
 
-
 /**
  * @brief Enable or disable display output
  * @param handle Driver handle
  * @param enabled true = display on, false = display blanked
  */
 void hub75_set_enabled(hub75_handle_t handle, bool enabled);
+
+/* ===================================================
+ * HUB75 Graphics API
+ * ===================================================
+ */
+
+/**
+ * @brief Clear entire canvas to a color
+ * @param panel HUB75 driver panel
+ * @param color Fill color (RGB565)
+ */
+void hub75_gfx_clear(hub75_handle_t panel, uint16_t color);
+
+/**
+ * @brief Set a single pixel
+ * @param panel HUB75 driver handle
+ * @param x X coordinate
+ * @param y Y coordinate
+ * @param color Color (RGB565)
+ */
+void hub75_gfx_set_pixel(hub75_handle_t panel, uint8_t x, uint8_t y, uint16_t color);
  
 #endif /* HUB75_H */

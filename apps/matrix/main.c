@@ -31,7 +31,6 @@
 
 #include <stdio.h>
 #include "hub75.h"
-#include "hub75_gfx.h"
 
 /* ====================================================
  * Configuration
@@ -73,4 +72,16 @@ static stream_t streams[STREAM_COUNT];
  */
 
 void app_main() {
+    hub75_config_t config = HUB75_CONFIG_DEFAULT();
+
+    hub75_handle_t panel = hub75_init(&config);
+    if (panel == NULL) {
+        return;
+    }
+
+    // Main loop
+    while (true) {
+        hub75_gfx_clear(panel, HUB75_GFX_RED);
+        hub75_refresh(panel);
+    }
 }

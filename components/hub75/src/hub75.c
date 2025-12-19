@@ -1,4 +1,3 @@
-
 // MIT License
 //
 // Copyright (c) 2025 Lars Milz
@@ -216,8 +215,8 @@ void hub75_refresh(hub75_handle_t handle) {
         gpio_set_level(pins->lat, 0);
 
         if (handle->enabled) {
-          gpio_set_level(pins->oe, 0);
-          esp_rom_delay_us(handle->row_time_us);
+            gpio_set_level(pins->oe, 0);
+            esp_rom_delay_us(handle->row_time_us);
         }
     }
 }
@@ -229,4 +228,19 @@ void hub75_set_enabled(hub75_handle_t handle, bool enabled) {
     handle->enabled = enabled;
     if (!enabled)
         gpio_set_level(handle->pins.oe, 1);
+}
+
+void hub75_gfx_clear(hub75_handle_t handle, uint16_t color) {
+    if (handle == NULL)
+        return;
+
+    size_t count = handle->width * handle->height;
+
+    if (color == 0) {
+        memset(handle->framebuffer, 0, count*sizeof(uint16_t));
+    } else {
+        for (size_t i=0; i < count; i++) {
+            handle->framebuffer[i] = color;
+        }
+    }
 }
