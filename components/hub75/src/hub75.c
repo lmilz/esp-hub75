@@ -244,3 +244,8 @@ void hub75_gfx_clear(hub75_handle_t handle, uint16_t color) {
         }
     }
 }
+
+void hub75_gfx_set_pixel(hub75_handle_t handle, uint8_t x, uint8_t y, uint16_t color) {
+    if (handle != NULL && x < handle->width && y < handle->height)
+        handle->framebuffer[y * handle->width + x] = color;
+}

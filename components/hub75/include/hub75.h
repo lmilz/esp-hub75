@@ -48,7 +48,16 @@
 #define HUB75_GFX_GREEN    0x07E0
 #define HUB75_GFX_BLUE     0x001F
 
+/**
+ * @breif Convert RGB components to RGB565 format
+ * @param r Red
+ * @param g Green 
+ * @param b Blue
+ */
+#define HUB75_RGB565(r, g, b) \
+    ((uint16_t)(((r) & 0x1F) << 11) | (((g) & 0x3F) << 5) | ((b) & 0x1F))
 
+    
 /* ===================================================
  * Scan Rate Definitions
  * ===================================================

@@ -29,7 +29,10 @@
  * Build: idf.py -DAPP=matrix build flash monitor
  */
 
+#include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
 #include "hub75.h"
 
 /* ====================================================
@@ -65,6 +68,60 @@ static stream_t streams[STREAM_COUNT];
  * ====================================================
  */
 
+static void stream_spawn(uint8_t panel_width) {
+    for (uint8_t index = 0; index < STREAM_COUNT; index++) {
+        if (!streams[index].active) {
+            streams[index].active        = true;
+            streams[index].column        = rand() % panel_width;
+            streams[index].head_row      = 0;
+            streams[index].length        = STREAM_MIN_LENGTH + (rand() % (STREAM_MAX_LENGTH - STREAM_MIN_LENGTH + 1));
+            streams[index].speed         = STREAM_MIN_SPEED + (rand() % (STREAM_MAX_SPEED -STREAM_MIN_SPEED + 1));
+            streams[index].frame_counter = 0;
+        }
+    }
+}
+
+static bool stream_update(stream_t* s, uint8_t panel_height) {
+    bool should_render = false;
+
+    if (s->active) {
+        s->frame_counter++;
+
+        if (s->frame_counter >= s->speed) {
+            s->head_row++;
+            s->frame_counter = 0;
+        }
+
+        if (s->head_row - s->length > panel_height) {
+            s->active = false;
+        } else {
+            should_render = true;
+        }
+    }
+
+    return should_render;
+}
+
+static void stream_render(hub75_handle_t panel, stream_t* s, uint8_t panel_height) {
+    for (uint8_t offset = 0; offset < s->length; offset++) {
+        uint8_t y = s->head_row - offset;
+
+        if (y < panel_height) {
+            // Head is bright white-green, tail fades to dark green
+            uint8_t brightness;
+            if (offset == 0) {
+                brightness = 63;
+            } else if (40 - offset > 1) {
+                brightness = 40 - offset;
+            } else {
+                brightness = 1;
+            }
+
+            uint16_t color = HUB75_RGB565(0, brightness, 0);
+            hub75_gfx_set_pixel(panel, s->column, y, color);
+        }
+    }
+}
 
 /* ====================================================
  * Application
@@ -79,9 +136,21 @@ void app_main() {
         return;
     }
 
+    // init of streams
+    memset(streams, 0, sizeof(streams));
+
     // Main loop
     while (true) {
-        hub75_gfx_clear(panel, HUB75_GFX_RED);
+        hub75_gfx_clear(panel, HUB75_GFX_BLACK);
+
+        for (uint8_t index = 0; index < STREAM_COUNT; index++) {
+            if (stream_update(&streams[index], 64))
+                stream_render(panel, &streams[index], 64);
+        }
+
+        if (rand() % SPAWN_CHANCE == 0)
+            stream_spawn(64);
+
         hub75_refresh(panel);
     }
 }
