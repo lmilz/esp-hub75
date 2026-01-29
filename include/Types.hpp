@@ -23,6 +23,10 @@
 /**
  * @file: Types.hpp
  * @brief Type definition for HUB75 driver
+ *
+ * Provides fundamental types used throughtout the HUB75 driver:
+ * - ScanRate: Panel multiplexing configuration
+ * - Color: RGB565 color representation
  */
 
 #ifndef HUB75_TYPES_H
@@ -46,14 +50,24 @@ namespace hub75 {
  * | 1/8       | 3 (A,B,C)     | height/8      | 32x16          |
  * | 1/16      | 4 (A,B,C,D)   | height/16     | 32x32, 64x32   |
  * | 1/32      | 5 (A,B,C,D,E) | height/32     | 64x64          |
+ *
+ * @see address_bits()
  */
-enum class ScanRate : uint8_t {:
+enum class ScanRate : uint8_t {
     Scan1_4 = 4,   ///< 1/4 scan  - 2 address bits (A,B)
     Scan1_8 = 8,   ///< 1/8 scan  - 3 address bits (A,B,C)
     Scan1_16 = 16, ///< 1/16 scan - 4 address bits (A,B,C,D)
     Scan1_32 = 32  ///< 1/32 scan - 5 address bits (A,B,C,D,E)
 };
 
+/**
+ * @brief Returns the number of row-adress pins required for a given scan rate
+ *
+ * @param rate The scan rate of the panel
+ * @return Number of address bits (2-5)
+ *
+ * @relates ScanRate
+ */
 constexpr uint8_t address_bits(ScanRate rate) {
     switch (rate) {
         case ScanRate::Scan1_4:  return 2;
@@ -65,18 +79,36 @@ constexpr uint8_t address_bits(ScanRate rate) {
     return 0;
 }
 
+/**
+ * @brief RGB565 color representation for HUB75 panels
+ *
+ * Stores color as a 16-bit value in RGBG565 format
+ * - Bits 15-11: Red   (5 bit, 0-31)
+ * - Bits 10-5:  Green (6 bit, 0-63)
+ * - Bits  4-0:  Blue  (5 bit, 0-31) 
+ *
+ * @note All arithmetic (brightness, blending) operates in RGB565 space. For best precision, convert from RGB888 via from_rgb888().
+ */
 struct Color {
     uint16_t raw{0};
 
     constexpr Color() = default;
     constexpr explicit Color(uint16_t rgb565) : raw(rgb565) {}
 
-    constexpr Color(uint8_t r, uint8_t g, uint8_t b) : raw(static_cast<uint16_t>(((r & 0x1F) << 11) | ((g & 0x3F) << 5) | (b & 0x1F)) {}
+    static constexpr Color from_rgb888(uint8_t r, uint8_t g, uint8_t b) {
+        return Color(static_cast<uint16_t>(((r & 0x1F) << 11) | ((g & 0x3F) << 5) | (b & 0x1F)));
+    }
 
     [[nodiscard]] constexpr uint8_t r() const { return (raw >> 11) & 0x1F; }
     [[nodiscard]] constexpr uint8_t g() const { return (raw >> 5) & 0x3F; }
     [[nodiscard]] constexpr uint8_t b() const { return raw & 0x1F; }
 
+    /**
+     * @brief Returns a brightness-adjusted copy of this color
+     *
+     * @param brightness Brightness scale factor (0 = off, 255 = full)
+     * @return New color with each channel scaled by brightness / 255
+     */
     [[nodiscard]] constexpr Color with_brightness(uint8_t brightness) const {
         return Color(
                 static_cast<uint8_t>((r() * brightness) >> 8),
@@ -84,17 +116,24 @@ struct Color {
                 static_cast<uint8_t>((b() * brightness) >> 8));
     }
 
+    /**
+     * @brief Linearly interpolates between this color and another
+     *
+     * @param other The color to blend torwards
+     * @param alpha Blend factor (0 = this color, 255 = other)
+     * @return The blended color
+     */
     [[nodiscard]] constexpr Color blend(Color other, uint8_t alpha) const {
         const uint8_t inv = 255 - alpha;
         return Color(
                 static_cast<uint8_t>((r() * inv + other.r() * alpha) >> 8),
-                static_cast<uint8_t>((b() * inv + other.b() * alpha) >> 8),
-                static_cast<uint8_t>((g() * inv + other.g() * alpha) >> 8));
+                static_cast<uint8_t>((g() * inv + other.g() * alpha) >> 8),
+                static_cast<uint8_t>((b() * inv + other.b() * alpha) >> 8));
     }
 
     static constexpr Color black() { return Color(0x0000); }
     static constexpr Color white() { return Color(0xFFFF); }
-    static constexpr Color red()   { return Color(0xF800); }
+    static constexpr Color red()   { return Color(0xF800); } 
     static constexpr Color green() { return Color(0x07E0); }
     static constexpr Color blue()  { return Color(0x001F); }
 
