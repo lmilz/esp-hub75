@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/lmilz/Second-Brain/Projects/esp-hub75/test/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

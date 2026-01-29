@@ -1,0 +1,237 @@
+Start testing: Jan 29 22:02 CET
+----------------------------------------------------------
+1/8 Testing: ScanRate.AddressBitsMapping
+1/8 Test: ScanRate.AddressBitsMapping
+Command: "/home/lmilz/Second-Brain/Projects/esp-hub75/test/build/hub75_tests" "--gtest_filter=ScanRate.AddressBitsMapping" "--gtest_also_run_disabled_tests"
+Directory: /home/lmilz/Second-Brain/Projects/esp-hub75/test/build
+"ScanRate.AddressBitsMapping" start time: Jan 29 22:02 CET
+Output:
+----------------------------------------------------------
+Running main() from /usr/src/debug/gtest/googletest-1.17.0/googletest/src/gtest_main.cc
+Note: Google Test filter = ScanRate.AddressBitsMapping
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ScanRate
+[ RUN      ] ScanRate.AddressBitsMapping
+[       OK ] ScanRate.AddressBitsMapping (0 ms)
+[----------] 1 test from ScanRate (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"ScanRate.AddressBitsMapping" end time: Jan 29 22:02 CET
+"ScanRate.AddressBitsMapping" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/8 Testing: Color.DefaultIsBlack
+2/8 Test: Color.DefaultIsBlack
+Command: "/home/lmilz/Second-Brain/Projects/esp-hub75/test/build/hub75_tests" "--gtest_filter=Color.DefaultIsBlack" "--gtest_also_run_disabled_tests"
+Directory: /home/lmilz/Second-Brain/Projects/esp-hub75/test/build
+"Color.DefaultIsBlack" start time: Jan 29 22:02 CET
+Output:
+----------------------------------------------------------
+Running main() from /usr/src/debug/gtest/googletest-1.17.0/googletest/src/gtest_main.cc
+Note: Google Test filter = Color.DefaultIsBlack
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Color
+[ RUN      ] Color.DefaultIsBlack
+[       OK ] Color.DefaultIsBlack (0 ms)
+[----------] 1 test from Color (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"Color.DefaultIsBlack" end time: Jan 29 22:02 CET
+"Color.DefaultIsBlack" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/8 Testing: Color.PredefinedColors
+3/8 Test: Color.PredefinedColors
+Command: "/home/lmilz/Second-Brain/Projects/esp-hub75/test/build/hub75_tests" "--gtest_filter=Color.PredefinedColors" "--gtest_also_run_disabled_tests"
+Directory: /home/lmilz/Second-Brain/Projects/esp-hub75/test/build
+"Color.PredefinedColors" start time: Jan 29 22:02 CET
+Output:
+----------------------------------------------------------
+Running main() from /usr/src/debug/gtest/googletest-1.17.0/googletest/src/gtest_main.cc
+Note: Google Test filter = Color.PredefinedColors
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Color
+[ RUN      ] Color.PredefinedColors
+[       OK ] Color.PredefinedColors (0 ms)
+[----------] 1 test from Color (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"Color.PredefinedColors" end time: Jan 29 22:02 CET
+"Color.PredefinedColors" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/8 Testing: Color.ChannelExtraction
+4/8 Test: Color.ChannelExtraction
+Command: "/home/lmilz/Second-Brain/Projects/esp-hub75/test/build/hub75_tests" "--gtest_filter=Color.ChannelExtraction" "--gtest_also_run_disabled_tests"
+Directory: /home/lmilz/Second-Brain/Projects/esp-hub75/test/build
+"Color.ChannelExtraction" start time: Jan 29 22:02 CET
+Output:
+----------------------------------------------------------
+Running main() from /usr/src/debug/gtest/googletest-1.17.0/googletest/src/gtest_main.cc
+Note: Google Test filter = Color.ChannelExtraction
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Color
+[ RUN      ] Color.ChannelExtraction
+[       OK ] Color.ChannelExtraction (0 ms)
+[----------] 1 test from Color (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"Color.ChannelExtraction" end time: Jan 29 22:02 CET
+"Color.ChannelExtraction" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/8 Testing: Color.FromRgb888
+5/8 Test: Color.FromRgb888
+Command: "/home/lmilz/Second-Brain/Projects/esp-hub75/test/build/hub75_tests" "--gtest_filter=Color.FromRgb888" "--gtest_also_run_disabled_tests"
+Directory: /home/lmilz/Second-Brain/Projects/esp-hub75/test/build
+"Color.FromRgb888" start time: Jan 29 22:02 CET
+Output:
+----------------------------------------------------------
+Running main() from /usr/src/debug/gtest/googletest-1.17.0/googletest/src/gtest_main.cc
+Note: Google Test filter = Color.FromRgb888
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Color
+[ RUN      ] Color.FromRgb888
+[       OK ] Color.FromRgb888 (0 ms)
+[----------] 1 test from Color (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"Color.FromRgb888" end time: Jan 29 22:02 CET
+"Color.FromRgb888" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/8 Testing: Color.Equality
+6/8 Test: Color.Equality
+Command: "/home/lmilz/Second-Brain/Projects/esp-hub75/test/build/hub75_tests" "--gtest_filter=Color.Equality" "--gtest_also_run_disabled_tests"
+Directory: /home/lmilz/Second-Brain/Projects/esp-hub75/test/build
+"Color.Equality" start time: Jan 29 22:02 CET
+Output:
+----------------------------------------------------------
+Running main() from /usr/src/debug/gtest/googletest-1.17.0/googletest/src/gtest_main.cc
+Note: Google Test filter = Color.Equality
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Color
+[ RUN      ] Color.Equality
+[       OK ] Color.Equality (0 ms)
+[----------] 1 test from Color (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"Color.Equality" end time: Jan 29 22:02 CET
+"Color.Equality" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/8 Testing: Color.BrightnessZeroIsBlack
+7/8 Test: Color.BrightnessZeroIsBlack
+Command: "/home/lmilz/Second-Brain/Projects/esp-hub75/test/build/hub75_tests" "--gtest_filter=Color.BrightnessZeroIsBlack" "--gtest_also_run_disabled_tests"
+Directory: /home/lmilz/Second-Brain/Projects/esp-hub75/test/build
+"Color.BrightnessZeroIsBlack" start time: Jan 29 22:02 CET
+Output:
+----------------------------------------------------------
+Running main() from /usr/src/debug/gtest/googletest-1.17.0/googletest/src/gtest_main.cc
+Note: Google Test filter = Color.BrightnessZeroIsBlack
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Color
+[ RUN      ] Color.BrightnessZeroIsBlack
+[       OK ] Color.BrightnessZeroIsBlack (0 ms)
+[----------] 1 test from Color (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"Color.BrightnessZeroIsBlack" end time: Jan 29 22:02 CET
+"Color.BrightnessZeroIsBlack" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/8 Testing: Color.BlendExtremes
+8/8 Test: Color.BlendExtremes
+Command: "/home/lmilz/Second-Brain/Projects/esp-hub75/test/build/hub75_tests" "--gtest_filter=Color.BlendExtremes" "--gtest_also_run_disabled_tests"
+Directory: /home/lmilz/Second-Brain/Projects/esp-hub75/test/build
+"Color.BlendExtremes" start time: Jan 29 22:02 CET
+Output:
+----------------------------------------------------------
+Running main() from /usr/src/debug/gtest/googletest-1.17.0/googletest/src/gtest_main.cc
+Note: Google Test filter = Color.BlendExtremes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Color
+[ RUN      ] Color.BlendExtremes
+/home/lmilz/Second-Brain/Projects/esp-hub75/test/test_types.cpp:82: Failure
+Expected equality of these values:
+  result_a
+    Which is: 2-byte object <00-F0>
+  Color::red()
+    Which is: 2-byte object <00-F8>
+
+/home/lmilz/Second-Brain/Projects/esp-hub75/test/test_types.cpp:85: Failure
+Expected equality of these values:
+  result_b
+    Which is: 2-byte object <1E-00>
+  Color::blue()
+    Which is: 2-byte object <1F-00>
+
+[  FAILED  ] Color.BlendExtremes (0 ms)
+[----------] 1 test from Color (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 0 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] Color.BlendExtremes
+
+ 1 FAILED TEST
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Failed.
+"Color.BlendExtremes" end time: Jan 29 22:02 CET
+"Color.BlendExtremes" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Jan 29 22:02 CET

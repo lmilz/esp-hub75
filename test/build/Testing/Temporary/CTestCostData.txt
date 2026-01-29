@@ -1,0 +1,10 @@
+ScanRate.AddressBitsMapping 2 0.00312187
+Color.DefaultIsBlack 2 0.00304734
+Color.PredefinedColors 2 0.00354314
+Color.ChannelExtraction 2 0.00257461
+Color.FromRgb888 2 0.00315425
+Color.Equality 2 0.00299318
+Color.BrightnessZeroIsBlack 2 0.00239145
+Color.BlendExtremes 0 0
+---
+Color.BlendExtremes

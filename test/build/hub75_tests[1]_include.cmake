@@ -1,0 +1,5 @@
+if(EXISTS "/home/lmilz/Second-Brain/Projects/esp-hub75/test/build/hub75_tests[1]_tests.cmake")
+  include("/home/lmilz/Second-Brain/Projects/esp-hub75/test/build/hub75_tests[1]_tests.cmake")
+else()
+  add_test(hub75_tests_NOT_BUILT hub75_tests_NOT_BUILT)
+endif()
