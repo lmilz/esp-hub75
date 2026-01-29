@@ -21,12 +21,8 @@
 // SOFTWARE.
 
 /**
- * @file: hub75.hpp
- * @brief HUB75 LED Matrix Panel Driver API
- *
- * Low-Level driver for HUB75 RGB LED matrix panels.
- * Supports panels multiple scan rates.
- *
+ * @file: Types.hpp
+ * @brief Type definition for HUB75 driver
  */
 
 #ifndef HUB75_TYPES_H
@@ -62,7 +58,8 @@ constexpr uint8_t address_bits(ScanRate rate) {
     switch (rate) {
         case ScanRate::Scan1_4:  return 2;
         case ScanRate::Scan1_8:  return 3;
-        case ScanRate::Scan1_16:
+        case ScanRate::Scan1_16: return 4;
+        case ScanRate::Scan1_32: return 5;
 }
 
 struct Color {
