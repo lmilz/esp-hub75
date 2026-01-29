@@ -60,6 +60,9 @@ constexpr uint8_t address_bits(ScanRate rate) {
         case ScanRate::Scan1_8:  return 3;
         case ScanRate::Scan1_16: return 4;
         case ScanRate::Scan1_32: return 5;
+    }
+
+    return 0;
 }
 
 struct Color {
