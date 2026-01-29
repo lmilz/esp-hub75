@@ -72,6 +72,33 @@ struct Color {
     constexpr explicit Color(uint16_t rgb565) : raw(rgb565) {}
 
     constexpr Color(uint8_t r, uint8_t g, uint8_t b) : raw(static_cast<uint16_t>(((r & 0x1F) << 11) | ((g & 0x3F) << 5) | (b & 0x1F)) {}
+
+    [[nodiscard]] constexpr uint8_t r() const { return (raw >> 11) & 0x1F; }
+    [[nodiscard]] constexpr uint8_t g() const { return (raw >> 5) & 0x3F; }
+    [[nodiscard]] constexpr uint8_t b() const { return raw & 0x1F; }
+
+    [[nodiscard]] constexpr Color with_brightness(uint8_t brightness) const {
+        return Color(
+                static_cast<uint8_t>((r() * brightness) >> 8),
+                static_cast<uint8_t>((g() * brightness) >> 8),
+                static_cast<uint8_t>((b() * brightness) >> 8));
+    }
+
+    [[nodiscard]] constexpr Color blend(Color other, uint8_t alpha) const {
+        const uint8_t inv = 255 - alpha;
+        return Color(
+                static_cast<uint8_t>((r() * inv + other.r() * alpha) >> 8),
+                static_cast<uint8_t>((b() * inv + other.b() * alpha) >> 8),
+                static_cast<uint8_t>((g() * inv + other.g() * alpha) >> 8));
+    }
+
+    static constexpr Color black() { return Color(0x0000); }
+    static constexpr Color white() { return Color(0xFFFF); }
+    static constexpr Color red()   { return Color(0xF800); }
+    static constexpr Color green() { return Color(0x07E0); }
+    static constexpr Color blue()  { return Color(0x001F); }
+
+    constexpr bool operator==(const Color&) const = default;
 };
 } // namespace hub75
 
