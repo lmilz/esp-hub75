@@ -111,9 +111,9 @@ struct Color {
      */
     [[nodiscard]] constexpr Color with_brightness(uint8_t brightness) const {
         return from_rgb888(
-                static_cast<uint8_t>((r() * brightness) >> 8),
-                static_cast<uint8_t>((g() * brightness) >> 8),
-                static_cast<uint8_t>((b() * brightness) >> 8));
+                static_cast<uint8_t>((r() * brightness) / 255),
+                static_cast<uint8_t>((g() * brightness) / 255),
+                static_cast<uint8_t>((b() * brightness) / 255));
     }
 
     /**
@@ -126,9 +126,9 @@ struct Color {
     [[nodiscard]] constexpr Color blend(Color other, uint8_t alpha) const {
         const uint8_t inv = 255 - alpha;
         return from_rgb888(
-                static_cast<uint8_t>((r() * inv + other.r() * alpha) >> 8),
-                static_cast<uint8_t>((g() * inv + other.g() * alpha) >> 8),
-                static_cast<uint8_t>((b() * inv + other.b() * alpha) >> 8));
+                static_cast<uint8_t>((r() * inv + other.r() * alpha) / 255),
+                static_cast<uint8_t>((g() * inv + other.g() * alpha) / 255),
+                static_cast<uint8_t>((b() * inv + other.b() * alpha) / 255));
     }
 
     static constexpr Color black() { return Color(0x0000); }
