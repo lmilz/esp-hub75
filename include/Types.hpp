@@ -139,6 +139,27 @@ struct Color {
 
     constexpr bool operator==(const Color&) const = default;
 };
+
+struct Point {
+    uint8_t x{0};
+    uint8_t y{0};
+
+    constexpr Point() = default;
+    constexpr Point(uint8_t x, uint8_t y) : x(x), y(y) {}
+
+    /**
+     * @brief Linear framebuffer index for a given panel width
+     *
+     * @param width Panel width
+     * @returns Index in the framebuffer
+     */
+    [[nodiscard]] constexpr uint16_t index(uint8_t width) const {
+        return static_cast<uint16_t>(y * width + x);
+    }
+
+    constexpr bool operator==(const Point&) const = default;
+};
+
 } // namespace hub75
 
 #endif /* HUB75_TYPES_H */

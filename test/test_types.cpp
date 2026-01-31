@@ -108,3 +108,8 @@ TEST(Point, IndexOrigin) {
     Point p;
     EXPECT_EQ(p.index(64), 0);
 }
+
+TEST(Point, Equality) {
+    EXPECT_EQ(Point(1, 2), Point(1, 2));
+    EXPECT_NE(Point(1, 2), Point(2, 1));
+}
