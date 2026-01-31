@@ -24,9 +24,10 @@
  * @file: Types.hpp
  * @brief Type definition for HUB75 driver
  *
- * Provides fundamental types used throughtout the HUB75 driver:
+ * Provides fundamental types used throughout the HUB75 driver:
  * - ScanRate: Panel multiplexing configuration
  * - Color: RGB565 color representation
+ * - Point: 2D pixel coordinate
  */
 
 #ifndef HUB75_TYPES_H
@@ -35,7 +36,6 @@
 
 // Includes
 #include <cstdint>
-#include <array>
 
 namespace hub75 {
 /**
@@ -61,7 +61,7 @@ enum class ScanRate : uint8_t {
 };
 
 /**
- * @brief Returns the number of row-adress pins required for a given scan rate
+ * @brief Returns the number of row-address pins required for a given scan rate
  *
  * @param rate The scan rate of the panel
  * @return Number of address bits (2-5)
@@ -76,13 +76,13 @@ constexpr uint8_t address_bits(ScanRate rate) {
         case ScanRate::Scan1_32: return 5;
     }
 
-    return 0;
+    __builtin_unreachable();
 }
 
 /**
  * @brief RGB565 color representation for HUB75 panels
  *
- * Stores color as a 16-bit value in RGBG565 format
+ * Stores color as a 16-bit value in RGB565 format
  * - Bits 15-11: Red   (5 bit, 0-31)
  * - Bits 10-5:  Green (6 bit, 0-63)
  * - Bits  4-0:  Blue  (5 bit, 0-31) 
@@ -96,7 +96,7 @@ struct Color {
     constexpr explicit Color(uint16_t rgb565) : raw(rgb565) {}
 
     static constexpr Color from_rgb888(uint8_t r, uint8_t g, uint8_t b) {
-        return Color(static_cast<uint16_t>(((r & 0x1F) << 11) | ((g & 0x3F) << 5) | (b & 0x1F)));
+        return Color(static_cast<uint16_t>(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3)));
     }
 
     [[nodiscard]] constexpr uint8_t r() const { return (raw >> 11) & 0x1F; }
@@ -110,25 +110,25 @@ struct Color {
      * @return New color with each channel scaled by brightness / 255
      */
     [[nodiscard]] constexpr Color with_brightness(uint8_t brightness) const {
-        return from_rgb888(
-                static_cast<uint8_t>((r() * brightness) / 255),
-                static_cast<uint8_t>((g() * brightness) / 255),
-                static_cast<uint8_t>((b() * brightness) / 255));
+        const uint8_t r5 = static_cast<uint8_t>((r() * brightness) / 255);
+        const uint8_t g6 = static_cast<uint8_t>((g() * brightness) / 255);
+        const uint8_t b5 = static_cast<uint8_t>((b() * brightness) / 255);
+        return Color(static_cast<uint16_t>((r5 << 11) | (g6 << 5) | b5));
     }
 
     /**
      * @brief Linearly interpolates between this color and another
      *
-     * @param other The color to blend torwards
+     * @param other The color to blend towards
      * @param alpha Blend factor (0 = this color, 255 = other)
      * @return The blended color
      */
     [[nodiscard]] constexpr Color blend(Color other, uint8_t alpha) const {
         const uint8_t inv = 255 - alpha;
-        return from_rgb888(
-                static_cast<uint8_t>((r() * inv + other.r() * alpha) / 255),
-                static_cast<uint8_t>((g() * inv + other.g() * alpha) / 255),
-                static_cast<uint8_t>((b() * inv + other.b() * alpha) / 255));
+        const uint8_t r5 = static_cast<uint8_t>((r() * inv + other.r() * alpha) / 255);
+        const uint8_t g6 = static_cast<uint8_t>((g() * inv + other.g() * alpha) / 255);
+        const uint8_t b5 = static_cast<uint8_t>((b() * inv + other.b() * alpha) / 255);
+        return Color(static_cast<uint16_t>((r5 << 11) | (g6 << 5) | b5));
     }
 
     static constexpr Color black() { return Color(0x0000); }
@@ -140,6 +140,11 @@ struct Color {
     constexpr bool operator==(const Color&) const = default;
 };
 
+/**
+ * @brief 2D pixel coordinate on a HUB75 panel
+ *
+ * Uses uint8_t since typical HUB75 panels do not exceed 256 pixels per axis
+ */
 struct Point {
     uint8_t x{0};
     uint8_t y{0};
@@ -154,7 +159,7 @@ struct Point {
      * @returns Index in the framebuffer
      */
     [[nodiscard]] constexpr uint16_t index(uint8_t width) const {
-        return static_cast<uint16_t>(y * width + x);
+        return static_cast<uint16_t>(static_cast<uint16_t>(y) * width + x);
     }
 
     constexpr bool operator==(const Point&) const = default;

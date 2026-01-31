@@ -62,9 +62,23 @@ TEST(Color, ChannelExtraction) {
     EXPECT_EQ(white.b(), 31);
 }
 
-TEST(Color, FromRgb888) {
-    Color c = Color::from_rgb888(31, 63, 31);
-    EXPECT_EQ(c, Color::white());
+TEST(Color, FromRgb888White) {
+    Color c = Color::from_rgb888(0xFF, 0xFF, 0xFF);
+    EXPECT_EQ(c.r(), 31);
+    EXPECT_EQ(c.g(), 63);
+    EXPECT_EQ(c.b(), 31);
+}
+
+TEST(Color, FromRgb888MidGray) {
+    Color c = Color::from_rgb888(128, 128, 128);
+    EXPECT_EQ(c.r(), 16);  // 128 >> 3
+    EXPECT_EQ(c.g(), 32);  // 128 >> 2
+    EXPECT_EQ(c.b(), 16);  // 128 >> 3
+}
+
+TEST(Color, FromRgb888Black) {
+    Color c = Color::from_rgb888(0, 0, 0);
+    EXPECT_EQ(c, Color::black());
 }
 
 TEST(Color, Equality) {
@@ -107,6 +121,16 @@ TEST(Point, Index) {
 TEST(Point, IndexOrigin) {
     Point p;
     EXPECT_EQ(p.index(64), 0);
+}
+
+TEST(Point, IndexMaxBounds) {
+    Point p(255, 255);
+    EXPECT_EQ(p.index(255), 65280); // 255*255 + 255 = 65280
+}
+
+TEST(Point, IndexWithZero) {
+    Point p(5, 3);
+    EXPECT_EQ(p.index(0), 5); // 3 * 0 + 5 = 5
 }
 
 TEST(Point, Equality) {
