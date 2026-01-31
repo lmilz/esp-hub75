@@ -84,3 +84,27 @@ TEST(Color, BlendExtremes) {
     Color result_b = Color::red().blend(Color::blue(), 255);
     EXPECT_EQ(result_b, Color::blue());
 }
+
+// === Point Tests ===
+
+TEST(Point, DefaultIsOrigin) {
+    Point p;
+    EXPECT_EQ(p.x, 0);
+    EXPECT_EQ(p.y, 0);
+}
+
+TEST(Point, Construction) {
+    Point p(10, 20);
+    EXPECT_EQ(p.x, 10);
+    EXPECT_EQ(p.y, 20);
+}
+
+TEST(Point, Index) {
+    Point p(3, 2);
+    EXPECT_EQ(p.index(64), 131); // 2 * 64 + 3 = 131
+}
+
+TEST(Point, IndexOrigin) {
+    Point p;
+    EXPECT_EQ(p.index(64), 0);
+}
