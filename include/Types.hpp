@@ -36,6 +36,7 @@
 
 // Includes
 #include <cstdint>
+#include <cstddef>
 
 namespace hub75 {
 /**
@@ -164,6 +165,57 @@ struct Point {
 
     constexpr bool operator==(const Point&) const = default;
 };
+
+/**
+ * @brief GPIO pin assignment for a HUB75 panel
+ *
+ * Maps logical HUB75 signals to GPIO pins.
+ * Set unused address pins to UNUSED.
+ */
+struct PinConfig {
+    uint8_t r1, g1, b1; ///< RGB upper half
+    uint8_t r2, g2, b2; ///< RGB lower half
+    uint8_t addr_a, addr_b, addr_c, addr_d, addr_e; ///< Row address
+    uint8_t oe, lat, clk; ///< Control
+
+    static constexpr uint8_t UNUSED = 0xFF;
+};
+
+/**
+ * @brief Default GPIO mapping for my specific wiring
+ */
+inline constexpr PinConfig DEFAULT_PINS = {
+    .r1 = 25, .g1 = 26, .b1 = 27,
+    .r2 = 14, .g2 = 12, .b2 = 13,
+    .addr_a = 22, .addr_b = 23, .addr_c = 5,
+    .addr_d = 33, .addr_e = 32,
+    .oe = 21, .lat = 19, .clk = 18
+};
+
+/**
+ * @brief Panel configuration
+ *
+ * @tparam W    Panel width in pixels
+ * @tparam H    Panel height in pixels
+ * @tparam Scan Scan rate (default: 1/16)
+ */
+template<uint8_t W, uint8_t H, ScanRate Scan = ScanRate::Scan1_16>
+struct PanelConfig {
+    static constexpr uint8_t width = W;
+    static constexpr uint8_t height = H;
+    static constexpr ScanRate scan_rate = Scan;
+    static constexpr uint8_t addr_bits = address_bits(Scan);
+    static constexpr uint8_t scan_rows = H / 2;
+    static constexpr size_t pixel_count = W * H;
+    static constexpr size_t framebuffer_bytes = pixel_count * sizeof(Color);
+    uint8_t row_time_us{120};
+    PinConfig pins{DEFAULT_PINS};
+};
+
+/** @brief Preset for 64x64 panels with 1/32 scan rate */
+using Panel64x64 = PanelConfig<64, 64, ScanRate::Scan1_32>;
+/** @brief Preset for 32x32 panels with 1/16 scan rate */
+using Panel32x32 = PanelConfig<32, 32, ScanRate::Scan1_16>;
 
 } // namespace hub75
 
