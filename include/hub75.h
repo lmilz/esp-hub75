@@ -195,6 +195,51 @@ void hub75_set_enabled(hub75_handle_t handle, bool enabled);
  */
 
 /**
+ * @brief Convert 8-bit RGB to RGB565
+ *
+ * Each channel is truncated to target bit width:
+ * - Red:   8 -> 5 bit (>> 3)
+ * - Green: 8 -> 6 bit (>> 2)
+ * - Blue:  8 -> 5 bit (>> 3)
+ */
+static inline uint16_t hub75_color_from_rgb888(uint8_t r, uint8_t g, uint8_t b) {
+    return (uint16_t)(((r >> 3) << 11) | ((g >> 2) << 5) | ((b >> 3)));
+}
+
+/** @brief Extract 5-bit red channel from RGB565 color */
+static inline uint8_t hub75_color_r(uint16_t color) {
+    return (uint8_t)((color >> 11) & 0x1F);
+}
+
+/** @brief Extract 6-bit green channel from RGB565 color */
+static inline uint8_t hub75_color_g(uint16_t color) {
+    return (uint8_t)((color >> 5) & 0x3F);
+}
+
+/** @brief Extract 5-bit blue channel from RGB565 color */
+static inline uint8_t hub75_color_b(uint16_t) {
+    return (uint8_t)(color & 0x1F);
+}
+
+/** @brief Expand RGB565 red channel to 8-bit */
+static inline uint8_t hub75_color_r8(uint16_t color) {
+    uint8_t r5 = hub75_color_r(color);
+    return (uint8_t)((r5 << 3) | (r5 >> 2));
+}
+
+/** @brief Expand RGB565 green channel to 8-bit */
+static inline uint8_t hub75_color_g8(uint16_t color) {
+    uint8_t g6 = hub75_color_g(color);
+    return (uint8_t)((g6 << 2) | (g6 >> 4));
+}
+
+/** @brief Expand RGB565 blue channel to 8-bit */
+static inline uint8_t hub75_color_b8(uint16_t color) {
+    uint8_t b5 = hub75_color_b(color);
+    return (uint8_t)((b5 << 3) | (b5 >> 2));
+}
+
+/**
  * @brief Clear entire canvas to a color
  * @param panel HUB75 driver panel
  * @param color Fill color (RGB565)
