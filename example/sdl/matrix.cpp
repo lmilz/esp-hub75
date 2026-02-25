@@ -21,34 +21,32 @@
 // SOFTWARE.
 
 /**
- * @file main.c
- * @brief blank application
+ * @file matrix.cpp
+ * @brief Matrix rain effect application
  *
- * Red blank screen
- *
- * Build: idf.py -DAPP=blank build flash monitor
+ * Classic "falling code" animation from The Matrix
  */
 
-#include <stdio.h>
-#include "hub75.h"
-                      
+#include "Framebuffer.hpp"
+#include "matrix.hpp"
+#include "sdl/SDLDriver.hpp"
 
-/* ====================================================
- * Application
- * ====================================================
- */
+int main() {
+    hub75::Framebuffer<64, 64> fb;
+    hub75::SDL::SDLDriver<64, 64> driver(fb);
+    MatrixStream<64, 64, 25> matrix;
 
-void app_main() {
-    hub75_config_t config = HUB75_CONFIG_DEFAULT();
+    bool running = true;
+    while (running) {
+        SDL_Event e;
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT) running = false;
+        }
 
-    hub75_handle_t panel = hub75_init(&config);
-    if (panel == NULL) {
-        return;
-    }
+        fb.fill(hub75::Color::black());
+        matrix.update(fb);
 
-    // Main loop
-    while (true) {
-        hub75_gfx_clear(panel, HUB75_GFX_RED);
-        hub75_refresh(panel);
+        driver.refresh();
+        SDL_Delay(16);
     }
 }

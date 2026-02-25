@@ -21,19 +21,19 @@
 // SOFTWARE.
 
 /**
- * @file main.c
+ * @file matrix.cpp
  * @brief Matrix rain effect application
  *
  * Classic "falling code" animation from The Matrix
- *
- * Build: idf.py -DAPP=matrix build flash monitor
  */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "hub75.h"
+#include "Types.hpp"
+#include "Framebuffer.hpp"
+#include "sdl/SDLDriver.hpp"
 
 /* ====================================================
  * Configuration
@@ -92,7 +92,7 @@ static bool stream_update(stream_t* s, uint8_t panel_height) {
             s->frame_counter = 0;
         }
 
-        if (s->head_row - s->length > panel_height) {
+        if (s->head_row > s->length + panel_height) {
             s->active = false;
         } else {
             should_render = true;
@@ -102,7 +102,7 @@ static bool stream_update(stream_t* s, uint8_t panel_height) {
     return should_render;
 }
 
-static void stream_render(hub75_handle_t panel, stream_t* s, uint8_t panel_height) {
+static void stream_render(hub75::Framebuffer<64, 64>& fb, stream_t* s, uint8_t panel_height) {
     for (uint8_t offset = 0; offset < s->length; offset++) {
         uint8_t y = s->head_row - offset;
 
@@ -110,15 +110,15 @@ static void stream_render(hub75_handle_t panel, stream_t* s, uint8_t panel_heigh
             // Head is bright white-green, tail fades to dark green
             uint8_t brightness;
             if (offset == 0) {
-                brightness = 63;
+                brightness = 255;
             } else if (40 - offset > 1) {
                 brightness = 40 - offset;
             } else {
                 brightness = 1;
             }
 
-            uint16_t color = HUB75_RGB565(0, brightness, 0);
-            hub75_gfx_set_pixel(panel, s->column, y, color);
+            hub75::Color color = hub75::Color::from_rgb888(0, brightness, 0);
+            fb.set(s->column, y, color);
         }
     }
 }
@@ -128,29 +128,30 @@ static void stream_render(hub75_handle_t panel, stream_t* s, uint8_t panel_heigh
  * ====================================================
  */
 
-void app_main() {
-    hub75_config_t config = HUB75_CONFIG_DEFAULT();
-
-    hub75_handle_t panel = hub75_init(&config);
-    if (panel == NULL) {
-        return;
-    }
-
-    // init of streams
+int main() {
+    hub75::DoubleFramebuffer<64, 64> fb;
+    hub75::SDL::SDLDriver<64, 64> driver(fb);
     memset(streams, 0, sizeof(streams));
+    fb.fill(hub75::Color::black());
 
-    // Main loop
-    while (true) {
-        hub75_gfx_clear(panel, HUB75_GFX_BLACK);
-
+    bool running = true;
+    while (running) {
+        SDL_Event e;
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT) running = false;
+        }
+        
+        fb.fill(hub75::Color::black());
         for (uint8_t index = 0; index < STREAM_COUNT; index++) {
             if (stream_update(&streams[index], 64))
-                stream_render(panel, &streams[index], 64);
+                stream_render(fb.back(), &streams[index], 64);
         }
 
         if (rand() % SPAWN_CHANCE == 0)
             stream_spawn(64);
-
-        hub75_refresh(panel);
+        
+        fb.swap();
+        driver.refresh();
+        driver.delay(16);
     }
 }
