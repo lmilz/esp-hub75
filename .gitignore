@@ -1,6 +1,18 @@
-# build folders
-/bin/
-/build/
+# Build folders
+bin/
+build*/
+out/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+cmake-build-*/
+install_manifest.txt
+CTestTestfile.cmake
+_deps/
+compile_commands.json
 
 # Espress-IDF
 sdkconfig
