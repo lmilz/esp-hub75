@@ -13,7 +13,6 @@ foreach(src ${EXAMPLE_SOURCES})
     get_filename_component(name ${src} NAME_WE)
     add_executable(${name} ${src})
     target_include_directories(${name} PRIVATE
-        ${CMAKE_SOURCE_DIR}/../../include
-        ${CMAKE_SOURCE_DIR}/../../apps)
+        ${CMAKE_SOURCE_DIR}/../../include)
     target_link_libraries(${name} PRIVATE SDL2::SDL2)
 endforeach()

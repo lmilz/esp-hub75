@@ -15,8 +15,8 @@ echo "========================================="
 echo " Running clang-format"
 echo "========================================="
 
-find "$PROJECT_DIR/include" "$PROJECT_DIR/test" \
-    -name '*.hpp' -o -name '*.cpp' | \
+find "$PROJECT_DIR/include" "$PROJECT_DIR/test" "$PROJECT_DIR/examples" \
+    \( -name '*.hpp' -o -name '*.cpp' \) | \
     grep -v '/build/' | \
     xargs clang-format -i --style=file
 
@@ -50,7 +50,7 @@ echo "========================================="
 APP="${APP:-blank}"
 echo "Selected app: $APP"
 
-idf.py -C "$PROJECT_DIR" -DAPP="$APP" build
+idf.py -C "$PROJECT_DIR/examples/esp32/$APP" build
 
 echo ""
 echo "========================================="

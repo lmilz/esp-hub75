@@ -6,7 +6,7 @@
 set -e
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
-EXAMPLE_DIR="$PROJECT_DIR/example/sdl"
+EXAMPLE_DIR="$PROJECT_DIR/examples/sdl"
 BUILD_DIR="$EXAMPLE_DIR/build"
 
 EXAMPLE="${1:-blank_red}"

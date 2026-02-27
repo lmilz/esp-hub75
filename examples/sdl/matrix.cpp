@@ -28,7 +28,7 @@
  */
 
 #include "Framebuffer.hpp"
-#include "matrix.hpp"
+#include "apps/matrix.hpp"
 #include "sdl/SDLDriver.hpp"
 
 int main() {
