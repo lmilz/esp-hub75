@@ -1,6 +1,6 @@
 # Build folders
 bin/
-build*/
+**/build*/
 out/
 
 # CMake
