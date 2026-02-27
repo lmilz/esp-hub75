@@ -27,8 +27,9 @@
  * Classic "falling code" animation from The Matrix
  */
 
-#include "Framebuffer.hpp"
 #include "apps/matrix.hpp"
+
+#include "Framebuffer.hpp"
 #include "sdl/SDLDriver.hpp"
 
 int main() {
