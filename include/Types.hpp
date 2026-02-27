@@ -78,10 +78,10 @@ namespace hub75 {
  * @see address_bits()
  */
 enum class ScanRate : uint8_t {
-  Scan1_4 = 4,   ///< 1/4 scan  - 2 address bits (A,B)
-  Scan1_8 = 8,   ///< 1/8 scan  - 3 address bits (A,B,C)
-  Scan1_16 = 16, ///< 1/16 scan - 4 address bits (A,B,C,D)
-  Scan1_32 = 32  ///< 1/32 scan - 5 address bits (A,B,C,D,E)
+    Scan1_4 = 4,    ///< 1/4 scan  - 2 address bits (A,B)
+    Scan1_8 = 8,    ///< 1/8 scan  - 3 address bits (A,B,C)
+    Scan1_16 = 16,  ///< 1/16 scan - 4 address bits (A,B,C,D)
+    Scan1_32 = 32   ///< 1/32 scan - 5 address bits (A,B,C,D,E)
 };
 
 /**
@@ -97,18 +97,18 @@ enum class ScanRate : uint8_t {
  * @relates ScanRate
  */
 constexpr uint8_t address_bits(ScanRate rate) {
-  switch (rate) {
-  case ScanRate::Scan1_4:
-    return 2;
-  case ScanRate::Scan1_8:
-    return 3;
-  case ScanRate::Scan1_16:
-    return 4;
-  case ScanRate::Scan1_32:
-    return 5;
-  }
+    switch (rate) {
+        case ScanRate::Scan1_4:
+            return 2;
+        case ScanRate::Scan1_8:
+            return 3;
+        case ScanRate::Scan1_16:
+            return 4;
+        case ScanRate::Scan1_32:
+            return 5;
+    }
 
-  __builtin_unreachable();
+    __builtin_unreachable();
 }
 
 /**
@@ -135,77 +135,73 @@ constexpr uint8_t address_bits(ScanRate rate) {
  *
  */
 struct Color {
-  uint16_t raw{0}; ///< Packed RGB565 value
+    uint16_t raw{0};  ///< Packed RGB565 value
 
-  /** @brief Default constructor. Initializes to black. */
-  constexpr Color() = default;
+    /** @brief Default constructor. Initializes to black. */
+    constexpr Color() = default;
 
-  /**
-   * @brief Construct from a raw RGB565 value.
-   * @param rgb565 Packed 16-bit cikir (R[15:11] | G[10:5] | B[4:0]).
-   */
-  constexpr explicit Color(uint16_t rgb565) : raw(rgb565) {}
+    /**
+     * @brief Construct from a raw RGB565 value.
+     * @param rgb565 Packed 16-bit cikir (R[15:11] | G[10:5] | B[4:0]).
+     */
+    constexpr explicit Color(uint16_t rgb565) : raw(rgb565) {}
 
-  /**
-   * @brief Convert an 8-bit-per-channel RGB triplet ro RGB565.
-   *
-   * Each channel is truncated (not rounded) to the target bit width:
-   * - Red:   8 -> 5 bit (>> 3)
-   * - Green: 8 -> 6 bit (>> 2)
-   * - Blue:  8 -> 5 bit (>> 3)
-   *
-   * @param r Red channel (0-255).
-   * @param g Green channel (0-255).
-   * @param b Blue channel (0-255).
-   * @return The corresponding RGB565 color.
-   */
-  static constexpr Color from_rgb888(uint8_t r, uint8_t g, uint8_t b) {
-    return Color(
-        static_cast<uint16_t>(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3)));
-  }
+    /**
+     * @brief Convert an 8-bit-per-channel RGB triplet ro RGB565.
+     *
+     * Each channel is truncated (not rounded) to the target bit width:
+     * - Red:   8 -> 5 bit (>> 3)
+     * - Green: 8 -> 6 bit (>> 2)
+     * - Blue:  8 -> 5 bit (>> 3)
+     *
+     * @param r Red channel (0-255).
+     * @param g Green channel (0-255).
+     * @param b Blue channel (0-255).
+     * @return The corresponding RGB565 color.
+     */
+    static constexpr Color from_rgb888(uint8_t r, uint8_t g, uint8_t b) {
+        return Color(static_cast<uint16_t>(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3)));
+    }
 
-  [[nodiscard]] constexpr uint8_t r() const { return (raw >> 11) & 0x1F; }
-  [[nodiscard]] constexpr uint8_t g() const { return (raw >> 5) & 0x3F; }
-  [[nodiscard]] constexpr uint8_t b() const { return raw & 0x1F; }
+    [[nodiscard]] constexpr uint8_t r() const { return (raw >> 11) & 0x1F; }
+    [[nodiscard]] constexpr uint8_t g() const { return (raw >> 5) & 0x3F; }
+    [[nodiscard]] constexpr uint8_t b() const { return raw & 0x1F; }
 
-  /**
-   * @brief Returns a brightness-adjusted copy of this color
-   *
-   * @param brightness Brightness scale factor (0 = off, 255 = full)
-   * @return New color with each channel scaled by brightness / 255
-   */
-  [[nodiscard]] constexpr Color with_brightness(uint8_t brightness) const {
-    const uint8_t r5 = static_cast<uint8_t>((r() * brightness) / 255);
-    const uint8_t g6 = static_cast<uint8_t>((g() * brightness) / 255);
-    const uint8_t b5 = static_cast<uint8_t>((b() * brightness) / 255);
-    return Color(static_cast<uint16_t>((r5 << 11) | (g6 << 5) | b5));
-  }
+    /**
+     * @brief Returns a brightness-adjusted copy of this color
+     *
+     * @param brightness Brightness scale factor (0 = off, 255 = full)
+     * @return New color with each channel scaled by brightness / 255
+     */
+    [[nodiscard]] constexpr Color with_brightness(uint8_t brightness) const {
+        const uint8_t r5 = static_cast<uint8_t>((r() * brightness) / 255);
+        const uint8_t g6 = static_cast<uint8_t>((g() * brightness) / 255);
+        const uint8_t b5 = static_cast<uint8_t>((b() * brightness) / 255);
+        return Color(static_cast<uint16_t>((r5 << 11) | (g6 << 5) | b5));
+    }
 
-  /**
-   * @brief Linearly interpolates between this color and another
-   *
-   * @param other The color to blend towards
-   * @param alpha Blend factor (0 = this color, 255 = other)
-   * @return The blended color
-   */
-  [[nodiscard]] constexpr Color blend(Color other, uint8_t alpha) const {
-    const uint8_t inv = 255 - alpha;
-    const uint8_t r5 =
-        static_cast<uint8_t>((r() * inv + other.r() * alpha) / 255);
-    const uint8_t g6 =
-        static_cast<uint8_t>((g() * inv + other.g() * alpha) / 255);
-    const uint8_t b5 =
-        static_cast<uint8_t>((b() * inv + other.b() * alpha) / 255);
-    return Color(static_cast<uint16_t>((r5 << 11) | (g6 << 5) | b5));
-  }
+    /**
+     * @brief Linearly interpolates between this color and another
+     *
+     * @param other The color to blend towards
+     * @param alpha Blend factor (0 = this color, 255 = other)
+     * @return The blended color
+     */
+    [[nodiscard]] constexpr Color blend(Color other, uint8_t alpha) const {
+        const uint8_t inv = 255 - alpha;
+        const uint8_t r5 = static_cast<uint8_t>((r() * inv + other.r() * alpha) / 255);
+        const uint8_t g6 = static_cast<uint8_t>((g() * inv + other.g() * alpha) / 255);
+        const uint8_t b5 = static_cast<uint8_t>((b() * inv + other.b() * alpha) / 255);
+        return Color(static_cast<uint16_t>((r5 << 11) | (g6 << 5) | b5));
+    }
 
-  static constexpr Color black() { return Color(0x0000); }
-  static constexpr Color white() { return Color(0xFFFF); }
-  static constexpr Color red() { return Color(0xF800); }
-  static constexpr Color green() { return Color(0x07E0); }
-  static constexpr Color blue() { return Color(0x001F); }
+    static constexpr Color black() { return Color(0x0000); }
+    static constexpr Color white() { return Color(0xFFFF); }
+    static constexpr Color red() { return Color(0xF800); }
+    static constexpr Color green() { return Color(0x07E0); }
+    static constexpr Color blue() { return Color(0x001F); }
 
-  constexpr bool operator==(const Color &) const = default;
+    constexpr bool operator==(const Color&) const = default;
 };
 
 /**
@@ -214,23 +210,23 @@ struct Color {
  * Uses uint8_t since typical HUB75 panels do not exceed 256 pixels per axis
  */
 struct Point {
-  uint8_t x{0};
-  uint8_t y{0};
+    uint8_t x{0};
+    uint8_t y{0};
 
-  constexpr Point() = default;
-  constexpr Point(uint8_t x, uint8_t y) : x(x), y(y) {}
+    constexpr Point() = default;
+    constexpr Point(uint8_t x, uint8_t y) : x(x), y(y) {}
 
-  /**
-   * @brief Linear framebuffer index for a given panel width
-   *
-   * @param width Panel width
-   * @returns Index in the framebuffer
-   */
-  [[nodiscard]] constexpr uint16_t index(uint8_t width) const {
-    return static_cast<uint16_t>(static_cast<uint16_t>(y) * width + x);
-  }
+    /**
+     * @brief Linear framebuffer index for a given panel width
+     *
+     * @param width Panel width
+     * @returns Index in the framebuffer
+     */
+    [[nodiscard]] constexpr uint16_t index(uint8_t width) const {
+        return static_cast<uint16_t>(static_cast<uint16_t>(y) * width + x);
+    }
 
-  constexpr bool operator==(const Point &) const = default;
+    constexpr bool operator==(const Point&) const = default;
 };
 
 /**
@@ -240,12 +236,12 @@ struct Point {
  * Set unused address pins to UNUSED.
  */
 struct PinConfig {
-  uint8_t r1, g1, b1;                             ///< RGB upper half
-  uint8_t r2, g2, b2;                             ///< RGB lower half
-  uint8_t addr_a, addr_b, addr_c, addr_d, addr_e; ///< Row address
-  uint8_t oe, lat, clk;                           ///< Control
+    uint8_t r1, g1, b1;                              ///< RGB upper half
+    uint8_t r2, g2, b2;                              ///< RGB lower half
+    uint8_t addr_a, addr_b, addr_c, addr_d, addr_e;  ///< Row address
+    uint8_t oe, lat, clk;                            ///< Control
 
-  static constexpr uint8_t UNUSED = 0xFF;
+    static constexpr uint8_t UNUSED = 0xFF;
 };
 
 /**
@@ -275,15 +271,15 @@ inline constexpr PinConfig DEFAULT_PINS = {.r1 = 25,
  */
 template <uint8_t W, uint8_t H, ScanRate Scan = ScanRate::Scan1_16>
 struct PanelConfig {
-  static constexpr uint8_t width = W;
-  static constexpr uint8_t height = H;
-  static constexpr ScanRate scan_rate = Scan;
-  static constexpr uint8_t addr_bits = address_bits(Scan);
-  static constexpr uint8_t scan_rows = H / 2;
-  static constexpr size_t pixel_count = W * H;
-  static constexpr size_t framebuffer_bytes = pixel_count * sizeof(Color);
-  uint8_t row_time_us{120};
-  PinConfig pins{DEFAULT_PINS};
+    static constexpr uint8_t width = W;
+    static constexpr uint8_t height = H;
+    static constexpr ScanRate scan_rate = Scan;
+    static constexpr uint8_t addr_bits = address_bits(Scan);
+    static constexpr uint8_t scan_rows = H / 2;
+    static constexpr size_t pixel_count = W * H;
+    static constexpr size_t framebuffer_bytes = pixel_count * sizeof(Color);
+    uint8_t row_time_us{120};
+    PinConfig pins{DEFAULT_PINS};
 };
 
 /** @brief Preset for 64x64 panels with 1/32 scan rate */
@@ -291,6 +287,6 @@ using Panel64x64 = PanelConfig<64, 64, ScanRate::Scan1_32>;
 /** @brief Preset for 32x32 panels with 1/16 scan rate */
 using Panel32x32 = PanelConfig<32, 32, ScanRate::Scan1_16>;
 
-} // namespace hub75
+}  // namespace hub75
 
 #endif /* HUB75_TYPES_H */

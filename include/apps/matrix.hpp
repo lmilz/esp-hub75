@@ -39,7 +39,7 @@
 template <uint8_t Width, uint8_t Height, uint8_t NumStreams>
 class MatrixStream {
     struct Stream {
-        bool    active{false};
+        bool active{false};
         uint8_t column{0};
         uint8_t head_row{0};
         uint8_t length{0};
@@ -61,7 +61,9 @@ class MatrixStream {
             if (advance(streams_[index])) {
                 auto& s = streams_[index];
                 for (uint8_t offset = 0; offset < s.length; offset++) {
-                    if (offset > s.head_row) { break; }
+                    if (offset > s.head_row) {
+                        break;
+                    }
                     uint8_t y = s.head_row - offset;
 
                     if (y < Height) {
@@ -76,11 +78,12 @@ class MatrixStream {
         if (rand() % spawn_chance_ == 0) {
             for (uint8_t index = 0; index < NumStreams; index++) {
                 if (!streams_[index].active) {
-                    streams_[index].active        = true;
-                    streams_[index].column        = rand() % Width;
-                    streams_[index].head_row      = 0;
-                    streams_[index].length        = min_length_ + (rand() % (max_length_ - min_length_ + 1));
-                    streams_[index].speed         = min_speed_ + (rand() % (max_speed_ - min_speed_ + 1));
+                    streams_[index].active = true;
+                    streams_[index].column = rand() % Width;
+                    streams_[index].head_row = 0;
+                    streams_[index].length =
+                        min_length_ + (rand() % (max_length_ - min_length_ + 1));
+                    streams_[index].speed = min_speed_ + (rand() % (max_speed_ - min_speed_ + 1));
                     streams_[index].frame_counter = 0;
                     return;
                 }
@@ -89,7 +92,9 @@ class MatrixStream {
     }
 
     bool advance(Stream& s) {
-        if (!s.active) { return false; }
+        if (!s.active) {
+            return false;
+        }
 
         s.frame_counter++;
         if (s.frame_counter >= s.speed) {

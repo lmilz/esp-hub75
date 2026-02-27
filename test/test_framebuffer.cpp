@@ -30,70 +30,70 @@ using namespace hub75;
 // === Framebuffer Tests ===
 
 TEST(Framebuffer, DefaultIsBlack) {
-  Framebuffer<4, 4> fb;
-  EXPECT_EQ(fb.get(0, 0), Color::black());
-  EXPECT_EQ(fb.get(4, 4), Color::black());
+    Framebuffer<4, 4> fb;
+    EXPECT_EQ(fb.get(0, 0), Color::black());
+    EXPECT_EQ(fb.get(4, 4), Color::black());
 }
 
 TEST(Framebuffer, SetAndGet) {
-  Framebuffer<4, 4> fb;
-  fb.set(1, 2, Color::red());
-  EXPECT_EQ(fb.get(1, 2), Color::red());
-  EXPECT_EQ(fb.get(0, 0), Color::black());
+    Framebuffer<4, 4> fb;
+    fb.set(1, 2, Color::red());
+    EXPECT_EQ(fb.get(1, 2), Color::red());
+    EXPECT_EQ(fb.get(0, 0), Color::black());
 }
 
 TEST(Framebuffer, SetWithPoint) {
-  Framebuffer<4, 4> fb;
-  fb.set(Point{2, 3}, Color::blue());
-  EXPECT_EQ(fb.get(Point{2, 3}), Color::blue());
+    Framebuffer<4, 4> fb;
+    fb.set(Point{2, 3}, Color::blue());
+    EXPECT_EQ(fb.get(Point{2, 3}), Color::blue());
 }
 
 TEST(Framebuffer, Fill) {
-  Framebuffer<4, 4> fb;
-  fb.fill(Color::green());
-  for (uint8_t y = 0; y < 4; ++y) {
-    for (uint8_t x = 0; x < 4; ++x) {
-      EXPECT_EQ(fb.get(x, y), Color::green());
+    Framebuffer<4, 4> fb;
+    fb.fill(Color::green());
+    for (uint8_t y = 0; y < 4; ++y) {
+        for (uint8_t x = 0; x < 4; ++x) {
+            EXPECT_EQ(fb.get(x, y), Color::green());
+        }
     }
-  }
 }
 
 TEST(Framebuffer, Clear) {
-  Framebuffer<4, 4> fb;
-  fb.fill(Color::red());
-  fb.clear();
-  for (uint8_t y = 0; y < 4; ++y) {
-    for (uint8_t x = 0; x < 4; ++x) {
-      EXPECT_EQ(fb.get(x, y), Color::black());
+    Framebuffer<4, 4> fb;
+    fb.fill(Color::red());
+    fb.clear();
+    for (uint8_t y = 0; y < 4; ++y) {
+        for (uint8_t x = 0; x < 4; ++x) {
+            EXPECT_EQ(fb.get(x, y), Color::black());
+        }
     }
-  }
 }
 
 TEST(Framebuffer, DataPointerNotNull) {
-  Framebuffer<4, 4> fb;
-  EXPECT_NE(fb.data(), nullptr);
+    Framebuffer<4, 4> fb;
+    EXPECT_NE(fb.data(), nullptr);
 }
 
 TEST(Framebuffer, DataReflectContent) {
-  Framebuffer<4, 4> fb;
-  fb.set(0, 0, Color::red());
-  const Color *data = fb.data();
-  EXPECT_EQ(data[0], Color::red());
+    Framebuffer<4, 4> fb;
+    fb.set(0, 0, Color::red());
+    const Color* data = fb.data();
+    EXPECT_EQ(data[0], Color::red());
 }
 
 TEST(Framebuffer, OutOfBoundsGet) {
-  Framebuffer<4, 4> fb;
-  fb.fill(Color::white());
-  EXPECT_EQ(fb.get(4, 0), Color::black()); // x == Width
-  EXPECT_EQ(fb.get(0, 4), Color::black()); // y == Height
-  EXPECT_EQ(fb.get(255, 255), Color::black());
+    Framebuffer<4, 4> fb;
+    fb.fill(Color::white());
+    EXPECT_EQ(fb.get(4, 0), Color::black());  // x == Width
+    EXPECT_EQ(fb.get(0, 4), Color::black());  // y == Height
+    EXPECT_EQ(fb.get(255, 255), Color::black());
 }
 
 TEST(Framebuffer, OutOfBoundsSet) {
-  Framebuffer<4, 4> fb;
-  fb.set(Point{4, 0}, Color::blue());
-  fb.set(Point{0, 4}, Color::red());
+    Framebuffer<4, 4> fb;
+    fb.set(Point{4, 0}, Color::blue());
+    fb.set(Point{0, 4}, Color::red());
 
-  EXPECT_EQ(fb.get(4, 0), Color::black()); // x == Width
-  EXPECT_EQ(fb.get(0, 4), Color::black()); // y == Height
+    EXPECT_EQ(fb.get(4, 0), Color::black());  // x == Width
+    EXPECT_EQ(fb.get(0, 4), Color::black());  // y == Height
 }
