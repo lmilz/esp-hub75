@@ -17,5 +17,3 @@ Checks: >
   -bugprone-easily-swappable-parameters,
 
 HeaderFilterRegex: '(include|examples)/.*\.(hpp|h)$'
-
-ExtraArgs: ['-std=c++23']

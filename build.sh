@@ -37,7 +37,7 @@ ln -sf "$TEST_BUILD_DIR/compile_commands.json" "$PROJECT_DIR/compile_commands.js
 
 echo ""
 echo "========================================="
-echo " Unit tests passed"
+echo " Unit tests passed (clang-tidy via cmake)"
 echo "========================================="
 
 # ── ESP-IDF Firmware Build ───────────────────────────────────────────
